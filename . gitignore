@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment Variables (Secrets)
+.env
+.env.local
+
+# Build Outputs
+dist/
+build/
+
+# Database Data (Docker)
+postgres_data/
+
+# OS Files
+.DS_Store
+
+# User Uploads (Don't sync PDF contracts to GitHub)
+server/uploads/*
+!server/uploads/.gitkeep

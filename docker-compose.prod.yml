@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  # Database
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin  # Change this!
+      POSTGRES_DB: subtracker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Backend API
+  api:
+    build: ./server
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      # notice 'db' is the hostname from the service above
+      DATABASE_URL: postgres://admin:secure_password_here@db:5432/subtracker
+    depends_on:
+      - db
+
+  # Frontend (Simple build serve)
+  web:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "80:80"
