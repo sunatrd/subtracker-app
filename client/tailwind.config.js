@@ -9,12 +9,12 @@ export default {
       colors: {
         brand: {
           primary: '#FF5A5F', // Airbnb "Rausch"
-          dark: '#E00B41',    // Hover state
-          teal: '#00A699',    // "Babu" (Secondary)
-          orange: '#FC642D',  // "Arches"
-          black: '#484848',   // "Hofmann"
-          gray: '#767676',    // "Foggy"
-          light: '#F7F7F7',   // Background
+          dark: '#E00B41',    // Hover state for primary
+          teal: '#00A699',    // "Babu" - Secondary accent
+          orange: '#FC642D',  // "Arches" - Warning accent
+          black: '#484848',   // "Hofmann" - Main text
+          gray: '#767676',    // "Foggy" - Secondary text
+          light: '#F7F7F7',   // Light page background
         }
       },
       fontFamily: {

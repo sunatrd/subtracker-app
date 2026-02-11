@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
-import { Card } from '../components/ui/Card';
 import { TrendingUp, TrendingDown, AlertCircle, ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Dashboard() {
   const { token } = useAuth();
@@ -23,81 +23,85 @@ export default function Dashboard() {
   });
 
   const StatCard = ({ title, value, subtext, icon: Icon, color }) => (
-    <Card className="relative overflow-hidden group">
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm relative overflow-hidden group"
+    >
       <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${color}`}>
         <Icon size={80} />
       </div>
       <div className="relative z-10">
-        <p className="text-brand-gray font-medium mb-1">{title}</p>
-        <h3 className="text-3xl font-extrabold text-brand-black mb-2">{value}</h3>
-        <p className="text-sm text-brand-gray flex items-center gap-1">
+        <p className="text-gray-500 font-medium mb-1 text-sm">{title}</p>
+        <h3 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">{value}</h3>
+        <p className="text-sm text-gray-500 flex items-center gap-1">
           {subtext}
         </p>
       </div>
-    </Card>
+    </motion.div>
   );
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-end">
+    <div className="space-y-8 pb-10">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
         <div>
-          <h2 className="text-3xl font-bold text-brand-black">Overview</h2>
-          <p className="text-brand-gray mt-1">Here's what's happening with your subscriptions today.</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Overview</h2>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">Here's what's happening with your subscriptions today.</p>
         </div>
-        <div className="text-sm text-brand-gray">
-          Current Date: <span className="font-semibold text-brand-black">{new Date().toLocaleDateString()}</span>
+        <div className="text-sm text-gray-400 font-medium">
+          {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* RESPONSIVE GRID: 1 col on mobile, 3 on desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         <StatCard 
           title="Monthly Burn" 
           value={`$${monthlyBurn.toFixed(2)}`} 
-          subtext={<><TrendingDown size={16} className="text-brand-primary"/> Projected expense</>}
+          subtext={<><TrendingDown size={16} className="text-red-500"/> Projected expense</>}
           icon={TrendingDown} 
-          color="text-brand-primary"
+          color="text-red-500"
         />
         <StatCard 
           title="Active Services" 
           value={contracts.length} 
           subtext="Total tracked items"
           icon={ArrowUpRight} 
-          color="text-brand-teal"
+          color="text-blue-500"
         />
         <StatCard 
           title="Upcoming Renewals" 
           value={upcomingRenewals.length} 
-          subtext={<><AlertCircle size={16} className="text-brand-orange"/> Next 30 days</>}
+          subtext={<><AlertCircle size={16} className="text-amber-500"/> Next 30 days</>}
           icon={AlertCircle} 
-          color="text-brand-orange"
+          color="text-amber-500"
         />
       </div>
 
       <div>
-        <h3 className="text-xl font-bold mb-4">Renewals Alert</h3>
+        <h3 className="text-lg font-bold mb-4 text-gray-800">Renewals Alert</h3>
         {upcomingRenewals.length === 0 ? (
-          <div className="bg-green-50 text-green-700 p-6 rounded-xl border border-green-100 flex items-center gap-3">
-             <div className="bg-green-100 p-2 rounded-full">✓</div> 
+          <div className="bg-emerald-50 text-emerald-800 p-6 rounded-xl border border-emerald-100 flex items-center gap-3 text-sm sm:text-base">
+             <div className="bg-emerald-100 p-2 rounded-full">✓</div> 
              No urgent renewals in the next 30 days. You're clear!
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-3">
             {upcomingRenewals.map(c => (
-               <Card key={c.id} className="flex justify-between items-center hover:border-brand-primary/50 cursor-pointer transition-colors !p-4">
+               <div key={c.id} className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center hover:border-red-300 transition-colors shadow-sm gap-3">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-red-100 text-brand-primary flex items-center justify-center font-bold text-lg">
+                    <div className="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center font-bold text-lg shrink-0">
                       !
                     </div>
                     <div>
-                      <h4 className="font-bold">{c.name}</h4>
-                      <p className="text-sm text-brand-gray">{c.type} • {c.amount} {c.currency}</p>
+                      <h4 className="font-bold text-gray-900">{c.name}</h4>
+                      <p className="text-xs sm:text-sm text-gray-500">{c.type} • {c.amount} {c.currency}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-brand-primary font-bold text-sm">Expires {c.renewalDate}</p>
-                    <p className="text-xs text-brand-gray">Action Required</p>
+                  <div className="text-left sm:text-right w-full sm:w-auto pl-14 sm:pl-0">
+                    <p className="text-red-600 font-bold text-sm">Expires {c.renewalDate}</p>
+                    <p className="text-xs text-gray-400">Action Required</p>
                   </div>
-               </Card>
+               </div>
             ))}
           </div>
         )}
